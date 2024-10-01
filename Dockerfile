@@ -22,8 +22,8 @@ RUN apt-get update && apt-get install -y \
 
 # Copy the requirements.txt file and install Python dependencies
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir truststore
+RUN pip install --no-cache-dir -r requirements.txt 
+RUN pip install --no-cache-dir truststore
 
 # Copy the rest of the project files
 COPY . .
