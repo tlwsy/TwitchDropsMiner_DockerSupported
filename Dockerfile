@@ -18,11 +18,12 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     libappindicator3-dev \
     libayatana-appindicator3-dev \
-    x11-utils # x11-utils for xdpyinfo
+    x11-utils
 
 # Copy the requirements.txt file and install Python dependencies
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir truststore
 
 # Copy the rest of the project files
 COPY . .
@@ -39,13 +40,10 @@ RUN x11vnc -storepasswd $VNC_PASSWORD ~/.vnc/passwd
 CMD rm -f /tmp/.X1-lock && \
     Xvfb :1 -screen 0 1024x768x16 & \
     fluxbox & \
-    # Wait for the X server to be up
     while ! xdpyinfo -display :1 > /dev/null 2>&1; do \
         echo "Waiting for X server to be available..."; \
         sleep 1; \
     done && \
     echo "X server is running" || (echo "X server failed to start, exiting..." && exit 1); \
-    # Start x11vnc with additional logging
     x11vnc -display :1 -nopw -listen 0.0.0.0 -xkb -no6 -noxdamage -o /var/log/x11vnc.log & \
-    # Explicitly set the DISPLAY variable for the Python application
     export DISPLAY=:1 && python main.py 2>&1 | tee /var/log/main.log
