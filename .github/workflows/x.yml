@@ -33,6 +33,41 @@ jobs:
         name: twitch_drops_miner_docker_supported_latest
         path: twitch_drops_miner_docker_supported_latest.tar
         retention-days: 30  # 将保留天数设置为 1 天 最多可设置90天
+  update_releases_page:
+    name: Upload builds to Releases
+    if: github.event_name != 'pull_request'
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Set up variables
+        id: vars
+        run: |
+          echo "date_now=$(date --rfc-3339=seconds)" >> "${GITHUB_OUTPUT}"
+
+      - name: Download build artifacts from previous jobs
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Upload builds to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: artifacts/*/*
+          body: |
+            **Build from https://github.com/DevilXD/TwitchDropsMiner/tree/master**
+
+            - Last build date: `${{steps.vars.outputs.date_now}}`
+            - Reference commit: ${{github.sha}}
+          name: Development build
+          prerelease: true
+          removeArtifacts: true
+          tag: dev-build
 
     
 
