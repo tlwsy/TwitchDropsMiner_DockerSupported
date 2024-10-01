@@ -60,7 +60,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t Twitch_Drops_Miner_Docker_Supported:latest .
+        docker build -t twitch_drops_miner_docker_supported:latest .
 
     
 
