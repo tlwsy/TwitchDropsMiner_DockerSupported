@@ -23,11 +23,14 @@ jobs:
       run: |
         docker build -t twitch_drops_miner_docker_supported:latest .
 
+    - name: Export Docker image
+      run: docker save "twitch_drops_miner_docker_supported:latest"
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: docker-images-tar
-        path: x86-64-images.tar.gz
+        name: docker-images
+        path: twitch_drops_miner_docker_supported:latest
         retention-days: 1  # 将保留天数设置为 1 天 最多可设置90天
 
     
