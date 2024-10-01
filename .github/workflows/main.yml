@@ -1,4 +1,4 @@
-name: Setup DockerEdition
+name: Setup DockerEdition-test
 
 on:
   workflow_dispatch:
